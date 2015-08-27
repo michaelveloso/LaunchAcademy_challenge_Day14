@@ -1,0 +1,7 @@
+<h1> <%= characters[0].actor_name %> </h1>
+<ul>
+  <% characters.each do |character| %>
+    <li><a href="/movies/<%= character.movie_id %>"><%= character.movie_title %></a>...
+    <%= character.name %></li>
+  <% end %>
+</ul>

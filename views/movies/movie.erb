@@ -1,0 +1,9 @@
+<h1> <%= movie.title %> </h1>
+<h2> released <%= movie.year %> by <%= movie.studio %> </h2>
+<h3>(<%= movie.genre %>)</h3>
+<ul>
+  <% characters.each do |character| %>
+  <li><a href="/actors/<%= character.actor_id %>"><%= character.actor_name %></a>...
+  <%= character.name %></li>
+  <% end %>
+</ul>
