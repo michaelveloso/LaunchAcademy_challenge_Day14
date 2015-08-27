@@ -23,7 +23,11 @@ class Actor
   end
 
   def last_name
-    name.split[-1]
+    names = name.split.reverse
+    names.each do |this_name|
+      return this_name if this_name[0] =~ /[A-Za-z]/
+    end
+    names[-1]
   end
 
   def first_name
@@ -36,7 +40,7 @@ class Actor
   private
 
   def self.sort_by_name (actors)
-    actors.sort_by {|actor| [actor.last_name, actor.first_name]}
+    actors.sort_by {|actor| [actor.last_name.downcase, actor.first_name]}
   end
 
 end

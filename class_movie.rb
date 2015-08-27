@@ -2,9 +2,14 @@ class Movie
 
   attr_reader :id, :title, :year, :rating, :genre, :studio
 
-  def self.all_by_title
-    movies = self.all
-    movies.sort_by {|movie| movie.title}
+  def self.all_with_ordering(order)
+    if order == "year"
+      self.all(sql_string_year)
+    elsif order == "rating"
+      self.all(sql_string_rating)
+    else
+      self.all(sql_string)
+    end
   end
 
   def self.get_by_movie_id(movie_id)
@@ -45,12 +50,18 @@ class Movie
     string << "LEFT OUTER JOIN studios ON movies.studio_id = studios.id"
   end
 
-  private
+  def self.sql_string_year
+    sql_string << " ORDER BY movies.year"
+  end
 
-  def self.all
+  def self.sql_string_rating
+    sql_string << " ORDER BY movies.rating DESC NULLS LAST"
+  end
+
+  def self.all(string)
     movies = []
     db_connection do |conn|
-      movies = conn.exec_params(sql_string)
+      movies = conn.exec_params(string)
     end
     movies = movies.to_a.map {|movie| Movie.new(movie)}
     movies

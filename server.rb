@@ -31,7 +31,7 @@ get '/actors/:id' do
 end
 
 get '/movies' do
-  movies = Movie.all_by_title
+  movies = Movie.all_with_ordering(params["order"])
   erb :'movies/movies', locals: {movies: movies}
 end
 
