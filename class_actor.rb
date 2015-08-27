@@ -11,6 +11,16 @@ class Actor
     sort_by_name(actors)
   end
 
+  # def self.get_chunk(page)
+  #   offset = (page - 1) * 20
+  #   actors = []
+  #   db_connection do |conn|
+  #     actors = conn.exec_params("SELECT id, name FROM actors ORDER BY name LIMIT 20 OFFSET ($1)",[offset])
+  #   end
+  #   actors = actors.to_a.map {|actor| Actor.new(actor)}
+  #   sort_by_name(actors)
+  # end
+
   def self.get_by_id(id)
     db_connection do |conn|
       conn.exec_params

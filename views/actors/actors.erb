@@ -5,3 +5,5 @@
     <li><a href="/actors/<%= actor.id %>"><%= actor.name %></a></li>
   </ul>
 <% end %>
+
+<a href="/actors?page=<%= page_number + 1%>">Next page</a>

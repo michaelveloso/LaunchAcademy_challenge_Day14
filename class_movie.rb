@@ -14,13 +14,30 @@ class Movie
 
   def self.get_by_movie_id(movie_id)
     movie = Movie.new
-    string = sql_string
-    string << " WHERE movies.id = ($1)"
     db_connection do |conn|
-      movie = conn.exec_params(string, [movie_id])
+      movie = conn.exec_params(sql_string_by_movie, [movie_id])
     end
     movie = Movie.new(movie[0])
     movie
+  end
+
+  def self.get_chunk(page)
+    movies = []
+    db_connection do |conn|
+      movies = conn.exec_params(sql_string_by_chunk(page))
+    end
+    movies = movies.to_a.map {|movie| Movie.new(movie)}
+    movies
+  end
+
+  def self.find_by_query(query)
+    movies = []
+    query_like = '%' + query + '%'
+    db_connection do |conn|
+      movies = conn.exec_params(sql_string_by_query, [query_like, query_like])
+    end
+    movies = movies.to_a.map {|movie| Movie.new(movie)}
+    movies
   end
 
   def initialize (args = {})
@@ -56,6 +73,19 @@ class Movie
 
   def self.sql_string_rating
     sql_string << " ORDER BY movies.rating DESC NULLS LAST"
+  end
+
+  def self.sql_string_by_movie
+    sql_string << " WHERE movies.id = ($1)"
+  end
+
+  def self.sql_string_by_chunk(page)
+    offset = (page - 1) * 20
+    sql_string << " ORDER BY movies.title LIMIT 20 OFFSET #{offset}"
+  end
+
+  def self.sql_string_by_query
+    sql_string << " WHERE movies.title ILIKE ($1) OR movies.synopsis LIKE ($2)"
   end
 
   def self.all(string)

@@ -1,11 +1,12 @@
-<h1>BIG ASS MOVIES LIST</h1>
+<h1>HERE'S WHAT YOU FOUND:</h1>
 <form action="/movies/search" method="get">
   <input type="text" name="query">
   <input type="submit" value="Search">
 </form>
-<a href="/movies">Sort by title</a></br>
-<a href="/movies?order=year">Sort by year</a></br>
-<a href="/movies?order=rating">Sort by rating</a></br>
+
+<% if movies.empty? %>
+<h2> NOTHING </h2>
+<% end %>
 
 <% movies.each do |movie| %>
   <ul>
@@ -14,8 +15,4 @@
       Rating: <%= movie.rating %>
     </li>
   </ul>
-<% end %>
-
-<% if page_number %>
-<a href="/movies?page=<%= page_number + 1%>">Next page</a>
 <% end %>
