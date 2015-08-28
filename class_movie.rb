@@ -21,10 +21,10 @@ class Movie
     movie
   end
 
-  def self.get_chunk(page)
+  def self.get_ordered_chunk(page, order)
     movies = []
     db_connection do |conn|
-      movies = conn.exec_params(sql_string_by_chunk(page))
+      movies = conn.exec_params(sql_string_by_chunk(page, order))
     end
     movies = movies.to_a.map {|movie| Movie.new(movie)}
     movies
@@ -57,6 +57,8 @@ class Movie
     end
   end
 
+################################################################################
+
   private
 
   def self.sql_string
@@ -75,17 +77,33 @@ class Movie
     sql_string << " ORDER BY movies.rating DESC NULLS LAST"
   end
 
+  def self.sql_string_title
+    sql_string << " ORDER BY movies.title"
+  end
+
   def self.sql_string_by_movie
     sql_string << " WHERE movies.id = ($1)"
   end
 
-  def self.sql_string_by_chunk(page)
+  def self.sql_string_add_chunk(page)
     offset = (page - 1) * 20
-    sql_string << " ORDER BY movies.title LIMIT 20 OFFSET #{offset}"
+    " LIMIT 20 OFFSET #{offset}"
   end
 
   def self.sql_string_by_query
     sql_string << " WHERE movies.title ILIKE ($1) OR movies.synopsis LIKE ($2)"
+  end
+
+  def self.sql_string_by_chunk(page, order = "")
+    search_string = ""
+    if order == "year"
+      search_string << sql_string_year
+    elsif order == "rating"
+      search_string << sql_string_rating
+    else
+      search_string << sql_string_title
+    end
+    search_string << sql_string_add_chunk(page)
   end
 
   def self.all(string)

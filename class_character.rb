@@ -26,6 +26,8 @@ class Character
     @movie_title = args["title"]
     @actor_name = args["name"]
   end
+  
+################################################################################
 
   private
 
